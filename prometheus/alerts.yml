@@ -1,0 +1,23 @@
+groups:
+  - name: system_alerts
+    interval: 10s
+    rules:
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance)(irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 5
+        for: 1m
+        labels:
+          severity: warning
+          service: node_exporter
+        annotations:
+          summary: "High CPU usage detected on {{ $labels.instance }}"
+          description: "CPU usage is above 5% (current value: {{ $value | humanize }}%)"
+
+      - alert: CriticalCPUUsage
+        expr: 100 - (avg by(instance)(irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 2m
+        labels:
+          severity: critical
+          service: node_exporter
+        annotations:
+          summary: "CRITICAL: CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is critically high at {{ $value | humanize }}%"
