@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   prometheus:
     image: prom/prometheus:latest
@@ -29,7 +27,6 @@ services:
     networks:
       - monitor-net
     restart: unless-stopped
-
 
   node_exporter:
     image: prom/node-exporter:latest

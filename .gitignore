@@ -1,1 +1,5 @@
 .env*
+
+# Grafana runtime data (database, downloaded plugins) — never commit
+grafana/grafana.db
+grafana/plugins/

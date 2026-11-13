@@ -4,120 +4,99 @@
   "title": "System Metrics Dashboard",
   "tags": ["system", "node_exporter"],
   "timezone": "browser",
-  "schemaVersion": 16,
-  "version": 2,
+  "schemaVersion": 39,
+  "version": 3,
   "refresh": "5s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
   "panels": [
     {
       "id": 1,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 0
-      },
-      "type": "graph",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "type": "timeseries",
       "title": "CPU Usage",
-      "datasource": "Prometheus",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
           "expr": "100 - (avg by(instance)(irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
           "legendFormat": "{{instance}}",
           "refId": "A"
         }
       ],
-      "yaxes": [
-        {
-          "format": "percent",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
           "max": 100,
-          "min": 0
-        },
-        {
-          "format": "short"
-        }
-      ],
-      "alert": {
-        "conditions": [
-          {
-            "evaluator": {
-              "params": [5],
-              "type": "gt"
-            },
-            "operator": {
-              "type": "and"
-            },
-            "query": {
-              "params": ["A", "5m", "now"]
-            },
-            "reducer": {
-              "params": [],
-              "type": "avg"
-            },
-            "type": "query"
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "thresholdsStyle": { "mode": "line+area" }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "value": null, "color": "transparent" },
+              { "value": 5, "color": "red" }
+            ]
           }
-        ],
-        "executionErrorState": "alerting",
-        "for": "1m",
-        "frequency": "1m",
-        "handler": 1,
-        "name": "CPU Usage alert",
-        "noDataState": "no_data",
-        "notifications": []
+        },
+        "overrides": []
       },
-      "thresholds": [
-        {
-          "value": 5,
-          "colorMode": "critical",
-          "op": "gt",
-          "fill": true,
-          "line": true
-        }
-      ]
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "none" }
+      }
     },
     {
       "id": 2,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 0
-      },
-      "type": "graph",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "type": "timeseries",
       "title": "Memory Usage",
-      "datasource": "Prometheus",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
           "expr": "(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100",
           "legendFormat": "{{instance}}",
           "refId": "A"
         }
       ],
-      "yaxes": [
-        {
-          "format": "percent",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
           "max": 100,
-          "min": 0
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 10
+          }
         },
-        {
-          "format": "short"
-        }
-      ]
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "none" }
+      }
     },
     {
       "id": 3,
-      "gridPos": {
-        "h": 4,
-        "w": 24,
-        "x": 0,
-        "y": 8
-      },
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 8 },
       "type": "stat",
       "title": "Active Alerts",
-      "datasource": "Prometheus",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
-          "expr": "ALERTS{alertstate=\"firing\"}",
-          "legendFormat": "{{alertname}}: {{instance}}",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "count(ALERTS{alertstate=\"firing\"}) or vector(0)",
+          "legendFormat": "Firing alerts",
           "refId": "A"
         }
       ],
@@ -126,6 +105,7 @@
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "textMode": "value",
         "reduceOptions": {
           "values": false,
           "fields": "",
@@ -134,38 +114,27 @@
       },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
+          "color": { "mode": "thresholds" },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "value": null,
-                "color": "green"
-              },
-              {
-                "value": 1,
-                "color": "red"
-              }
+              { "value": null, "color": "green" },
+              { "value": 1, "color": "red" }
             ]
           }
-        }
+        },
+        "overrides": []
       }
     },
     {
       "id": 4,
-      "gridPos": {
-        "h": 6,
-        "w": 24,
-        "x": 0,
-        "y": 12
-      },
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 12 },
       "type": "table",
       "title": "Alert History",
-      "datasource": "Prometheus",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
           "expr": "ALERTS",
           "format": "table",
           "instant": true,
@@ -178,7 +147,8 @@
           "options": {
             "excludeByName": {
               "Time": true,
-              "__name__": true
+              "__name__": true,
+              "Value": true
             }
           }
         }
