@@ -17,4 +17,4 @@ scrape_configs:
 
   - job_name: 'node_exporter'
     static_configs:
-      - targets: ['host.docker.internal:9100']  # Changed to access host machine
+      - targets: ['node_exporter:9100']

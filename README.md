@@ -10,7 +10,9 @@ A complete monitoring solution using Prometheus, Grafana, and Node Exporter to t
 
 - **CPU Usage**: Real-time CPU utilization percentage
 - **Memory Usage**: RAM consumption and availability
-- **Alerts**: Automated notifications when CPU exceeds 5%
+- **Alerts**: Prometheus alert rules that fire when CPU exceeds 5% (shown in Prometheus and on the dashboard; no Alertmanager or notification channel is configured)
+
+> **macOS / Windows note:** with Docker Desktop, Node Exporter runs inside Docker's Linux VM, so the dashboard reports that VM's CPU and memory, not the host OS. On a Linux host it reports the host itself.
 
 ## 🏗️ Architecture
 
@@ -62,13 +64,12 @@ monitoring-dashboard/
 ├── docker-compose.yml
 ├── .env
 ├── grafana/
-│   ├── provisioning/
-│   │   ├── dashboards/
-│   │   │   └── dashboards.yml
-│   │   └── datasources/
-│   │       └── datasources.yml
-│   └── dashboards/
-│       └── system-metrics.json
+│   └── provisioning/
+│       ├── dashboards/
+│       │   ├── dashboards.yml
+│       │   └── system-metrics.json
+│       └── datasources/
+│           └── datasources.yml
 └── prometheus/
     ├── prometheus.yml
     └── alerts.yml
@@ -129,7 +130,7 @@ CPU usage alerts:
 - **Warning**: Fires when CPU > 5% for 1 minute
 - **Critical**: Fires when CPU > 80% for 2 minutes
 
-### Grafana Dashboard (`grafana/dashboards/system-metrics.json`)
+### Grafana Dashboard (`grafana/provisioning/dashboards/system-metrics.json`)
 
 Pre-configured dashboard with:
 - CPU usage graph with 5% threshold line
@@ -231,7 +232,7 @@ docker-compose restart prometheus
 
 ### Add More Metrics
 
-Edit `grafana/dashboards/system-metrics.json` to add panels for:
+Edit `grafana/provisioning/dashboards/system-metrics.json` to add panels for:
 - Disk usage
 - Network I/O
 - System load
